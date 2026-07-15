@@ -20,9 +20,12 @@
     --muted: #c4a882;
     --divider: #e0c9a8;
     --shadow: rgba(100,60,20,0.10);
+    --ok: #4a8c5c;
   }
 
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
 
   body {
     font-family: 'Jost', sans-serif;
@@ -32,32 +35,52 @@
   }
 
   /* ─── APP LAYOUT ─── */
-  .app { display: grid; grid-template-columns: 420px 1fr; min-height: 100vh; }
+  .app { display: grid; grid-template-columns: 400px 1fr; min-height: 100vh; }
 
   /* ─── SIDEBAR ─── */
   .sidebar {
     background: var(--charcoal);
     color: var(--parchment);
-    padding: 40px 32px 60px;
+    padding: 36px 30px 100px;
     overflow-y: auto;
     position: sticky;
     top: 0;
     height: 100vh;
+    scrollbar-width: thin;
+    scrollbar-color: #4a3520 #1a1208;
+  }
+  .sidebar::-webkit-scrollbar { width: 8px; }
+  .sidebar::-webkit-scrollbar-track { background: #1a1208; }
+  .sidebar::-webkit-scrollbar-thumb { background: #4a3520; border-radius: 4px; }
+  .sidebar::-webkit-scrollbar-thumb:hover { background: var(--sienna); }
+
+  .sidebar-head { display: flex; align-items: center; gap: 12px; margin-bottom: 4px; }
+  .sidebar-mark {
+    width: 34px; height: 34px;
+    border-radius: 50%;
+    border: 1.5px solid var(--sienna);
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 17px;
+    color: var(--tan);
+    flex-shrink: 0;
   }
   .sidebar-title {
     font-family: 'Cormorant Garamond', serif;
-    font-size: 28px;
+    font-size: 26px;
     font-weight: 500;
-    letter-spacing: 0.04em;
+    letter-spacing: 0.03em;
     color: var(--tan);
-    margin-bottom: 6px;
+    line-height: 1.1;
   }
   .sidebar-sub {
-    font-size: 11px;
+    font-size: 10.5px;
     letter-spacing: 0.18em;
     text-transform: uppercase;
     color: var(--soft);
-    margin-bottom: 36px;
+    margin: 6px 0 32px;
+    padding-left: 46px;
   }
 
   .section-label {
@@ -65,7 +88,7 @@
     letter-spacing: 0.2em;
     text-transform: uppercase;
     color: var(--sienna);
-    margin: 28px 0 14px;
+    margin: 30px 0 14px;
     display: flex;
     align-items: center;
     gap: 10px;
@@ -76,8 +99,9 @@
     height: 1px;
     background: #3d2c18;
   }
+  .section-label:first-of-type { margin-top: 0; }
 
-  .field { margin-bottom: 14px; }
+  .field { margin-bottom: 13px; }
   .field label {
     display: block;
     font-size: 10.5px;
@@ -90,46 +114,70 @@
     width: 100%;
     background: #1e1408;
     border: 1px solid #3d2c18;
-    border-radius: 4px;
+    border-radius: 5px;
     color: var(--parchment);
     font-family: 'Jost', sans-serif;
     font-size: 13.5px;
     padding: 9px 12px;
     outline: none;
-    transition: border-color 0.2s;
+    transition: border-color 0.15s, box-shadow 0.15s;
     resize: vertical;
   }
   .field input::placeholder, .field textarea::placeholder { color: #5a4030; }
   .field input:focus, .field textarea:focus, .field select:focus {
     border-color: var(--sienna);
-    box-shadow: 0 0 0 2px rgba(196,122,58,0.15);
+    box-shadow: 0 0 0 3px rgba(196,122,58,0.16);
   }
-  .field select { appearance: none; cursor: pointer; }
-  .field textarea { min-height: 72px; }
+  .field select {
+    appearance: none;
+    cursor: pointer;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23c47a3a'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    padding-right: 30px;
+  }
+  .field textarea { min-height: 68px; line-height: 1.5; }
 
   .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 
+  /* Remove number spinners */
+  input[type=number]::-webkit-inner-spin-button,
+  input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+  input[type=number] { -moz-appearance: textfield; }
+
   /* Logo upload */
+  .logo-row { display: flex; align-items: center; gap: 12px; }
   .logo-upload-zone {
+    flex: 1;
     border: 1.5px dashed #3d2c18;
-    border-radius: 6px;
-    padding: 18px;
+    border-radius: 8px;
+    padding: 14px;
     text-align: center;
     cursor: pointer;
-    transition: border-color 0.2s, background 0.2s;
+    transition: border-color 0.15s, background 0.15s;
     background: #1a1008;
+    display: flex;
+    align-items: center;
+    gap: 12px;
   }
   .logo-upload-zone:hover { border-color: var(--sienna); background: #1f1510; }
   .logo-upload-zone input { display: none; }
-  .logo-preview { width: 64px; height: 64px; object-fit: cover; border-radius: 50%; margin: 0 auto; display: block; border: 2px solid var(--sienna); }
-  .upload-hint { font-size: 11px; color: #5a4030; margin-top: 6px; }
-  .upload-cta { font-size: 12px; color: var(--sienna); letter-spacing: 0.08em; }
+  .logo-preview { width: 48px; height: 48px; object-fit: cover; border-radius: 50%; flex-shrink: 0; border: 2px solid var(--sienna); display: none; }
+  .upload-hint { font-size: 10.5px; color: #5a4030; margin-top: 3px; }
+  .upload-cta { font-size: 12px; color: var(--sienna); letter-spacing: 0.04em; text-align: left; }
+  .logo-remove {
+    background: none; border: 1px solid #3d2c18; color: var(--soft);
+    font-size: 10.5px; letter-spacing: 0.06em; text-transform: uppercase;
+    padding: 8px 10px; border-radius: 5px; cursor: pointer; white-space: nowrap;
+    transition: border-color 0.15s, color 0.15s; display: none;
+  }
+  .logo-remove:hover { border-color: var(--rust); color: var(--rust); }
 
   /* Items */
   #items-list { margin-top: 6px; }
   .item-row {
     display: grid;
-    grid-template-columns: 1fr 60px 80px 26px;
+    grid-template-columns: 1fr 54px 76px 24px;
     gap: 6px;
     margin-bottom: 8px;
     align-items: center;
@@ -137,40 +185,43 @@
   .item-row input {
     background: #1e1408;
     border: 1px solid #3d2c18;
-    border-radius: 4px;
+    border-radius: 5px;
     color: var(--parchment);
     font-family: 'Jost', sans-serif;
     font-size: 12.5px;
-    padding: 7px 8px;
+    padding: 8px;
     outline: none;
-    transition: border-color 0.2s;
+    transition: border-color 0.15s;
   }
-  .item-row input:focus { border-color: var(--sienna); }
+  .item-row input:focus { border-color: var(--sienna); box-shadow: 0 0 0 3px rgba(196,122,58,0.16); }
   .item-row input::placeholder { color: #5a4030; }
+  .item-row input[type=number] { text-align: right; }
   .remove-item {
     background: none;
     border: none;
     color: #5a4030;
     cursor: pointer;
-    font-size: 17px;
-    transition: color 0.2s;
+    font-size: 18px;
+    transition: color 0.15s, transform 0.15s;
     text-align: center;
     line-height: 1;
+    border-radius: 4px;
+    padding: 4px 0;
   }
-  .remove-item:hover { color: var(--rust); }
+  .remove-item:hover { color: var(--rust); transform: scale(1.15); }
 
   .btn-add {
     width: 100%;
     background: #1e1408;
     border: 1px dashed #3d2c18;
-    border-radius: 4px;
+    border-radius: 5px;
     color: var(--sienna);
     font-family: 'Jost', sans-serif;
     font-size: 12px;
     letter-spacing: 0.1em;
-    padding: 9px;
+    padding: 10px;
     cursor: pointer;
-    transition: all 0.2s;
+    transition: all 0.15s;
     margin-top: 4px;
   }
   .btn-add:hover { border-color: var(--sienna); background: #231a0e; }
@@ -181,16 +232,16 @@
   .meta-row input {
     background: #1e1408;
     border: 1px solid #3d2c18;
-    border-radius: 4px;
+    border-radius: 5px;
     color: var(--parchment);
     font-family: 'Jost', sans-serif;
     font-size: 13px;
-    padding: 7px 10px;
+    padding: 8px 10px;
     outline: none;
     text-align: right;
-    transition: border-color 0.2s;
+    transition: border-color 0.15s;
   }
-  .meta-row input:focus { border-color: var(--sienna); }
+  .meta-row input:focus { border-color: var(--sienna); box-shadow: 0 0 0 3px rgba(196,122,58,0.16); }
 
   /* Action buttons */
   .action-row {
@@ -198,24 +249,34 @@
     grid-template-columns: 1fr 1fr;
     gap: 10px;
     margin-top: 32px;
+    position: sticky;
+    bottom: -1px;
+    background: var(--charcoal);
+    padding-top: 14px;
+    padding-bottom: 4px;
   }
   .btn-action {
     padding: 13px 0;
-    border-radius: 4px;
+    border-radius: 5px;
     font-family: 'Jost', sans-serif;
     font-size: 12px;
-    letter-spacing: 0.16em;
+    letter-spacing: 0.14em;
     text-transform: uppercase;
     cursor: pointer;
-    transition: all 0.22s;
+    transition: all 0.18s;
     border: none;
     font-weight: 500;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
   }
   .btn-pdf {
     background: var(--sienna);
     color: var(--cream);
   }
   .btn-pdf:hover { background: var(--rust); }
+  .btn-pdf:disabled { opacity: 0.6; cursor: wait; }
   .btn-print {
     background: transparent;
     border: 1.5px solid var(--sienna);
@@ -239,6 +300,15 @@
     color: var(--soft);
     margin-bottom: 24px;
     align-self: flex-start;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .preview-label::before {
+    content: '';
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--sienna);
   }
 
   /* ─── INVOICE PAPER ─── */
@@ -276,6 +346,7 @@
     justify-content: space-between;
     align-items: flex-start;
     margin-bottom: 48px;
+    gap: 20px;
   }
   .inv-brand { max-width: 48%; }
   .inv-logo-wrap {
@@ -295,7 +366,8 @@
     font-weight: 600;
     color: var(--deep-rust);
     letter-spacing: 0.03em;
-    line-height: 1.1;
+    line-height: 1.15;
+    word-break: break-word;
   }
   .inv-brand-tagline {
     font-size: 11px;
@@ -305,7 +377,7 @@
     margin-top: 4px;
   }
 
-  .inv-meta { text-align: right; }
+  .inv-meta { text-align: right; flex-shrink: 0; }
   .inv-title {
     font-family: 'Cormorant Garamond', serif;
     font-size: 42px;
@@ -326,11 +398,6 @@
   .inv-dates span { color: var(--charcoal); font-weight: 500; }
 
   /* Divider */
-  .inv-divider {
-    height: 1px;
-    background: linear-gradient(to right, var(--tan), var(--divider), transparent);
-    margin: 32px 0;
-  }
   .inv-divider-thick {
     height: 2.5px;
     background: linear-gradient(to right, var(--sienna), var(--tan), transparent);
@@ -357,12 +424,14 @@
     font-weight: 500;
     color: var(--charcoal);
     margin-bottom: 4px;
+    word-break: break-word;
   }
   .addr-detail {
     font-size: 12.5px;
     color: var(--soft);
     line-height: 1.7;
     white-space: pre-line;
+    word-break: break-word;
   }
 
   /* Table */
@@ -383,19 +452,13 @@
   .inv-table tbody tr { border-bottom: 1px solid #ede0ce; }
   .inv-table tbody tr:last-child { border-bottom: none; }
   .inv-table tbody td {
-    padding: 13px 0;
+    padding: 13px 10px 13px 0;
     font-size: 13.5px;
     color: var(--charcoal);
     vertical-align: top;
   }
   .inv-table tbody td:not(:first-child) { text-align: right; color: var(--mid); }
   .inv-table tbody td.item-name { color: var(--charcoal); font-weight: 400; }
-  .inv-table tbody td.item-desc {
-    font-size: 11.5px;
-    color: var(--muted);
-    display: block;
-    margin-top: 2px;
-  }
 
   /* Totals */
   .inv-totals { display: flex; justify-content: flex-end; margin-top: 12px; }
@@ -434,6 +497,7 @@
     color: var(--soft);
     line-height: 1.75;
     white-space: pre-line;
+    word-break: break-word;
   }
 
   /* Footer */
@@ -442,6 +506,7 @@
     display: flex;
     justify-content: space-between;
     align-items: flex-end;
+    gap: 16px;
   }
   .inv-thank {
     font-family: 'Cormorant Garamond', serif;
@@ -469,11 +534,26 @@
     font-family: 'Jost', sans-serif;
     z-index: 10;
   }
-  .inv-stamp.paid { border-color: #4a8c5c; color: #4a8c5c; opacity: 0.18; }
+  .inv-stamp.paid { border-color: var(--ok); color: var(--ok); opacity: 0.18; }
   .inv-stamp.unpaid { border-color: var(--rust); color: var(--rust); opacity: 0.14; }
 
-  /* Currency symbol */
-  .currency { font-size: 0.75em; vertical-align: super; margin-right: 1px; }
+  /* ─── RESPONSIVE ─── */
+  @media (max-width: 980px) {
+    .app { grid-template-columns: 1fr; }
+    .sidebar { position: relative; height: auto; top: auto; padding-bottom: 40px; }
+    .action-row { position: relative; bottom: auto; }
+    .preview-area { padding: 32px 16px 56px; }
+    #invoice { padding: 40px 28px 56px; }
+  }
+  @media (max-width: 560px) {
+    .inv-header { flex-direction: column; }
+    .inv-meta { text-align: left; }
+    .inv-addresses { grid-template-columns: 1fr; gap: 24px; }
+    .inv-footer { flex-direction: column; align-items: flex-start; gap: 10px; }
+    .inv-footer-contact { text-align: left; }
+    #invoice { padding: 32px 20px 44px; }
+    .inv-brand { max-width: 100%; }
+  }
 
   /* ─── PRINT STYLES ─── */
   @media print {
@@ -493,21 +573,27 @@
 
   <!-- ══ SIDEBAR ══ -->
   <aside class="sidebar">
-    <div class="sidebar-title">Invoice Studio</div>
+    <div class="sidebar-head">
+      <div class="sidebar-mark">I</div>
+      <div class="sidebar-title">Invoice Studio</div>
+    </div>
     <div class="sidebar-sub">Design · Generate · Export</div>
 
     <!-- BRAND -->
     <div class="section-label">Your Brand</div>
     <div class="field">
       <label>Logo</label>
-      <label class="logo-upload-zone" id="logo-zone">
-        <input type="file" id="logo-input" accept="image/*" onchange="handleLogo(this)"/>
-        <img id="logo-thumb" class="logo-preview" style="display:none"/>
-        <div id="upload-text">
-          <div class="upload-cta">+ Upload Logo</div>
-          <div class="upload-hint">PNG, JPG or SVG · max 2 MB</div>
-        </div>
-      </label>
+      <div class="logo-row">
+        <label class="logo-upload-zone" id="logo-zone">
+          <input type="file" id="logo-input" accept="image/*" onchange="handleLogo(this)"/>
+          <img id="logo-thumb" class="logo-preview"/>
+          <div id="upload-text">
+            <div class="upload-cta">+ Upload Logo</div>
+            <div class="upload-hint">PNG, JPG or SVG · max 2 MB</div>
+          </div>
+        </label>
+        <button class="logo-remove" id="logo-remove-btn" onclick="removeLogo()">Remove</button>
+      </div>
     </div>
     <div class="field">
       <label>Business / Brand Name</label>
@@ -545,7 +631,7 @@
           <option value="€">EUR €</option>
           <option value="£">GBP £</option>
           <option value="¥">JPY ¥</option>
-          <option value="AED">AED</option>
+          <option value="AED ">AED</option>
         </select>
       </div>
     </div>
@@ -589,7 +675,7 @@
     <button class="btn-add" onclick="addItem()">+ Add Line Item</button>
 
     <!-- TOTALS -->
-    <div class="section-label">Tax & Discount</div>
+    <div class="section-label">Tax &amp; Discount</div>
     <div class="meta-row">
       <label>Discount (%)</label>
       <input type="number" id="discount" placeholder="0" min="0" max="100" oninput="recalc()"/>
@@ -600,14 +686,14 @@
     </div>
 
     <!-- NOTES -->
-    <div class="section-label">Notes & Terms</div>
+    <div class="section-label">Notes &amp; Terms</div>
     <div class="field">
       <textarea id="notes" placeholder="Thank you for your business. Payment due within 30 days. Bank details: …" oninput="syncNotes()"></textarea>
     </div>
 
     <!-- ACTIONS -->
     <div class="action-row">
-      <button class="btn-action btn-pdf" onclick="savePDF()">⬇ Save PDF</button>
+      <button class="btn-action btn-pdf" id="pdf-btn" onclick="savePDF()">⬇ Save PDF</button>
       <button class="btn-action btn-print" onclick="window.print()">⎙ Print</button>
     </div>
   </aside>
@@ -681,7 +767,7 @@
 
       <!-- Notes -->
       <div class="inv-notes-section" id="notes-section" style="display:none">
-        <div class="inv-notes-label">Notes & Terms</div>
+        <div class="inv-notes-label">Notes &amp; Terms</div>
         <div class="inv-notes-text" id="inv-notes-text"></div>
       </div>
 
@@ -694,14 +780,14 @@
   </main>
 </div>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script>
 // ── INIT ──────────────────────────────────────────────────────────────────
 let items = [];
 let logoDataUrl = null;
 
 window.onload = () => {
-  // Set today's date
   const today = new Date();
   const fmt = d => d.toISOString().split('T')[0];
   const due = new Date(today); due.setDate(due.getDate() + 30);
@@ -721,11 +807,22 @@ function handleLogo(input) {
     document.getElementById('logo-thumb').src = logoDataUrl;
     document.getElementById('logo-thumb').style.display = 'block';
     document.getElementById('upload-text').style.display = 'none';
+    document.getElementById('logo-remove-btn').style.display = 'block';
     const invLogo = document.getElementById('inv-logo');
     invLogo.src = logoDataUrl;
     document.getElementById('inv-logo-wrap').style.display = 'block';
   };
   reader.readAsDataURL(file);
+}
+
+function removeLogo() {
+  logoDataUrl = null;
+  document.getElementById('logo-input').value = '';
+  document.getElementById('logo-thumb').style.display = 'none';
+  document.getElementById('upload-text').style.display = 'block';
+  document.getElementById('logo-remove-btn').style.display = 'none';
+  document.getElementById('inv-logo-wrap').style.display = 'none';
+  document.getElementById('inv-logo').src = '';
 }
 
 // ── SYNC HELPERS ─────────────────────────────────────────────────────────
@@ -787,7 +884,7 @@ function syncNotes() {
 
 // ── ITEMS ─────────────────────────────────────────────────────────────────
 function addItem() {
-  const id = Date.now();
+  const id = Date.now() + Math.floor(Math.random() * 1000);
   items.push({ id, desc:'', qty:1, rate:0 });
   renderItems();
 }
@@ -802,7 +899,7 @@ function renderItems() {
   const list = document.getElementById('items-list');
   list.innerHTML = items.map(item => `
     <div class="item-row" data-id="${item.id}">
-      <input type="text" placeholder="Item description" value="${item.desc}"
+      <input type="text" placeholder="Item description" value="${escapeAttr(item.desc)}"
         oninput="updateItem(${item.id},'desc',this.value)"/>
       <input type="number" placeholder="Qty" value="${item.qty === 0 ? '' : item.qty}" min="0"
         oninput="updateItem(${item.id},'qty',this.value)"/>
@@ -811,6 +908,13 @@ function renderItems() {
       <button class="remove-item" onclick="removeItem(${item.id})" title="Remove">×</button>
     </div>
   `).join('');
+}
+
+function escapeAttr(str) {
+  return String(str).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;');
+}
+function escapeHtml(str) {
+  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 }
 
 function updateItem(id, field, value) {
@@ -827,7 +931,6 @@ function recalc() {
   const taxPct = parseFloat(document.getElementById('tax').value) || 0;
   const fmt = n => sym + n.toLocaleString('en-IN', {minimumFractionDigits:2, maximumFractionDigits:2});
 
-  // Build table
   const tbody = document.getElementById('inv-items-body');
   if (items.length === 0) {
     tbody.innerHTML = '<tr><td colspan="4" style="color:var(--muted);font-size:12px;padding:18px 0;text-align:center;">Add line items in the sidebar →</td></tr>';
@@ -842,7 +945,7 @@ function recalc() {
     subtotal += amount;
     return `
       <tr>
-        <td class="item-name">${item.desc || '<em style="color:var(--muted)">Unnamed item</em>'}</td>
+        <td class="item-name">${item.desc ? escapeHtml(item.desc) : '<em style="color:var(--muted)">Unnamed item</em>'}</td>
         <td>${item.qty}</td>
         <td>${fmt(item.rate)}</td>
         <td>${fmt(amount)}</td>
@@ -877,18 +980,81 @@ function recalc() {
 }
 
 // ── PDF ───────────────────────────────────────────────────────────────────
-function savePDF() {
-  const brand = document.getElementById('brand-name').value || 'Invoice';
-  const num = document.getElementById('inv-num').value || 'INV';
-  const element = document.getElementById('invoice');
-  const opt = {
-    margin: [8, 10, 8, 10],
-    filename: `${brand}_${num}.pdf`,
-    image: { type: 'jpeg', quality: 0.98 },
-    html2canvas: { scale: 2, useCORS: true, backgroundColor: '#fffaf4', logging: false },
-    jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
-  };
-  html2pdf().set(opt).from(element).save();
+// Renders the invoice to a high-res canvas, then slices it across as many
+// A4 pages as needed so long invoices are never cut off mid-page.
+async function savePDF() {
+  const btn = document.getElementById('pdf-btn');
+  const originalLabel = btn.textContent;
+  btn.disabled = true;
+  btn.textContent = 'Generating…';
+
+  try {
+    const element = document.getElementById('invoice');
+
+    // Temporarily neutralize the clipping/shadow so nothing gets cropped
+    const prevBoxShadow = element.style.boxShadow;
+    const prevOverflow = element.style.overflow;
+    element.style.boxShadow = 'none';
+    element.style.overflow = 'visible';
+
+    const canvas = await html2canvas(element, {
+      scale: 2.5,
+      useCORS: true,
+      backgroundColor: '#fffaf4',
+      logging: false,
+      windowWidth: element.scrollWidth,
+      windowHeight: element.scrollHeight,
+    });
+
+    element.style.boxShadow = prevBoxShadow;
+    element.style.overflow = prevOverflow;
+
+    const { jsPDF } = window.jspdf;
+    const pdf = new jsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait' });
+
+    const pageWidth = pdf.internal.pageSize.getWidth();
+    const pageHeight = pdf.internal.pageSize.getHeight();
+
+    // Scale factor from canvas pixels to PDF mm, based on full page width
+    const pxToMm = pageWidth / canvas.width;
+    const pageHeightPx = pageHeight / pxToMm;
+
+    let renderedHeightPx = 0;
+    let pageNum = 0;
+
+    while (renderedHeightPx < canvas.height) {
+      const sliceHeightPx = Math.min(pageHeightPx, canvas.height - renderedHeightPx);
+
+      const pageCanvas = document.createElement('canvas');
+      pageCanvas.width = canvas.width;
+      pageCanvas.height = sliceHeightPx;
+      const ctx = pageCanvas.getContext('2d');
+      ctx.fillStyle = '#fffaf4';
+      ctx.fillRect(0, 0, pageCanvas.width, pageCanvas.height);
+      ctx.drawImage(
+        canvas,
+        0, renderedHeightPx, canvas.width, sliceHeightPx,
+        0, 0, canvas.width, sliceHeightPx
+      );
+
+      const imgData = pageCanvas.toDataURL('image/jpeg', 0.95);
+      if (pageNum > 0) pdf.addPage();
+      pdf.addImage(imgData, 'JPEG', 0, 0, pageWidth, sliceHeightPx * pxToMm);
+
+      renderedHeightPx += sliceHeightPx;
+      pageNum++;
+    }
+
+    const brand = document.getElementById('brand-name').value || 'Invoice';
+    const num = document.getElementById('inv-num').value || 'INV';
+    pdf.save(`${brand}_${num}.pdf`);
+  } catch (err) {
+    console.error('PDF generation failed:', err);
+    alert('Something went wrong generating the PDF. Please try again.');
+  } finally {
+    btn.disabled = false;
+    btn.textContent = originalLabel;
+  }
 }
 </script>
 </body>
